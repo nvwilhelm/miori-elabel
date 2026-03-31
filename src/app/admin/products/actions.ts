@@ -8,6 +8,7 @@ import {
   nutritionalValues,
   ingredients,
   qrCodes,
+  recyclingMaterials,
 } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { generateQrSvg } from "@/lib/qr";
@@ -54,6 +55,8 @@ export async function createProduct(
     const volumeMl = volumeStr ? parseInt(volumeStr, 10) : 750;
     const tasteProfile =
       (formData.get("tasteProfile") as string) || null;
+    const sugarClassification =
+      (formData.get("sugarClassification") as string) || null;
     const producerName =
       (formData.get("producerName") as string) || null;
     const lotNumber = (formData.get("lotNumber") as string) || null;
@@ -80,6 +83,7 @@ export async function createProduct(
         alcoholPercentage,
         volumeMl,
         tasteProfile,
+        sugarClassification,
         producerName,
         lotNumber,
         ean,
@@ -91,6 +95,10 @@ export async function createProduct(
     const energyKj = formData.get("energyKj") as string;
     const energyKcal = formData.get("energyKcal") as string;
     if (energyKj && energyKcal) {
+      const residualSugarStr = formData.get("residualSugar") as string;
+      const totalAcidityStr = formData.get("totalAcidity") as string;
+      const glycerinStr = formData.get("glycerin") as string;
+
       await db.insert(nutritionalValues).values({
         productId: product.id,
         energyKj,
@@ -101,6 +109,9 @@ export async function createProduct(
         sugars: (formData.get("sugars") as string) || "0",
         protein: (formData.get("protein") as string) || "0",
         salt: (formData.get("salt") as string) || "0",
+        residualSugar: residualSugarStr || null,
+        totalAcidity: totalAcidityStr || null,
+        glycerin: glycerinStr || null,
       });
     }
 
@@ -108,6 +119,9 @@ export async function createProduct(
     const ingredientKeys = formData.getAll("ingredientKey") as string[];
     const ingredientAllergens = formData.getAll(
       "ingredientAllergen"
+    ) as string[];
+    const ingredientBios = formData.getAll(
+      "ingredientBio"
     ) as string[];
     const ingredientCategories = formData.getAll(
       "ingredientCategory"
@@ -119,7 +133,23 @@ export async function createProduct(
           productId: product.id,
           nameKey: key,
           isAllergen: ingredientAllergens[index] === "true",
+          isBio: ingredientBios[index] === "true",
           functionalCategory: ingredientCategories[index] || null,
+          sortOrder: index,
+        }))
+      );
+    }
+
+    // Recycling-Materialien anlegen
+    const recyclingComponents = formData.getAll("recyclingComponent") as string[];
+    const recyclingMaterialValues = formData.getAll("recyclingMaterial") as string[];
+
+    if (recyclingComponents.length > 0) {
+      await db.insert(recyclingMaterials).values(
+        recyclingComponents.map((component, index) => ({
+          productId: product.id,
+          component,
+          material: recyclingMaterialValues[index],
           sortOrder: index,
         }))
       );
@@ -176,6 +206,8 @@ export async function updateProduct(
     const volumeMl = volumeStr ? parseInt(volumeStr, 10) : 750;
     const tasteProfile =
       (formData.get("tasteProfile") as string) || null;
+    const sugarClassification =
+      (formData.get("sugarClassification") as string) || null;
     const producerName =
       (formData.get("producerName") as string) || null;
     const lotNumber = (formData.get("lotNumber") as string) || null;
@@ -202,6 +234,7 @@ export async function updateProduct(
         alcoholPercentage,
         volumeMl,
         tasteProfile,
+        sugarClassification,
         producerName,
         lotNumber,
         ean,
@@ -218,6 +251,10 @@ export async function updateProduct(
         where: eq(nutritionalValues.productId, productId),
       });
 
+      const residualSugarStr = formData.get("residualSugar") as string;
+      const totalAcidityStr = formData.get("totalAcidity") as string;
+      const glycerinStr = formData.get("glycerin") as string;
+
       const nutritionData = {
         productId,
         energyKj,
@@ -228,6 +265,9 @@ export async function updateProduct(
         sugars: (formData.get("sugars") as string) || "0",
         protein: (formData.get("protein") as string) || "0",
         salt: (formData.get("salt") as string) || "0",
+        residualSugar: residualSugarStr || null,
+        totalAcidity: totalAcidityStr || null,
+        glycerin: glycerinStr || null,
         updatedAt: new Date(),
       };
 
@@ -250,6 +290,9 @@ export async function updateProduct(
     const ingredientAllergens = formData.getAll(
       "ingredientAllergen"
     ) as string[];
+    const ingredientBios = formData.getAll(
+      "ingredientBio"
+    ) as string[];
     const ingredientCategories = formData.getAll(
       "ingredientCategory"
     ) as string[];
@@ -260,7 +303,27 @@ export async function updateProduct(
           productId,
           nameKey: key,
           isAllergen: ingredientAllergens[index] === "true",
+          isBio: ingredientBios[index] === "true",
           functionalCategory: ingredientCategories[index] || null,
+          sortOrder: index,
+        }))
+      );
+    }
+
+    // Recycling-Materialien: Loesche alte, fuege neue ein
+    await db
+      .delete(recyclingMaterials)
+      .where(eq(recyclingMaterials.productId, productId));
+
+    const recyclingComponents = formData.getAll("recyclingComponent") as string[];
+    const recyclingMaterialValues = formData.getAll("recyclingMaterial") as string[];
+
+    if (recyclingComponents.length > 0) {
+      await db.insert(recyclingMaterials).values(
+        recyclingComponents.map((component, index) => ({
+          productId,
+          component,
+          material: recyclingMaterialValues[index],
           sortOrder: index,
         }))
       );

@@ -17,7 +17,7 @@ export const products = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     slug: text("slug").unique().notNull(),
     name: text("name").notNull(),
-    productType: text("product_type").notNull(), // 'wine' | 'spirit'
+    productType: text("product_type").notNull(), // 'wine' | 'aromatised_wine' | 'liqueur_wine' | 'spirit'
     wineType: text("wine_type"), // 'red' | 'white' | 'rose' | 'sparkling' | 'dessert'
     grapeVarieties: text("grape_varieties").array(),
     originCountry: text("origin_country").notNull(), // ISO 3166-1 alpha-2
@@ -30,6 +30,7 @@ export const products = pgTable(
     }),
     volumeMl: integer("volume_ml").default(750),
     tasteProfile: text("taste_profile"), // 'dry' | 'semi-dry' | 'semi-sweet' | 'sweet'
+    sugarClassification: text("sugar_classification"), // 'brut_nature' | 'extra_brut' | 'brut' | 'extra_dry' | 'dry' | 'demi_sec' | 'doux'
     producerName: text("producer_name"),
     lotNumber: text("lot_number"),
     ean: text("ean"),
@@ -51,6 +52,11 @@ export const nutritionalValues = pgTable("nutritional_values", {
     .unique()
     .notNull()
     .references(() => products.id, { onDelete: "cascade" }),
+  // Oenologische Rohdaten (fuer automatische Berechnung)
+  residualSugar: decimal("residual_sugar", { precision: 6, scale: 1 }), // g/l
+  totalAcidity: decimal("total_acidity", { precision: 5, scale: 1 }), // g/l (Weinsaeure C4H6O6)
+  glycerin: decimal("glycerin", { precision: 5, scale: 1 }), // g/l (Standardwert oder manuell)
+  // Berechnete/eingegebene Naehrwerte pro 100ml
   energyKj: decimal("energy_kj", { precision: 7, scale: 1 }).notNull(),
   energyKcal: decimal("energy_kcal", { precision: 6, scale: 1 }).notNull(),
   fat: decimal("fat", { precision: 5, scale: 2 }).default("0"),
@@ -79,6 +85,7 @@ export const ingredients = pgTable(
     nameKey: text("name_key").notNull(), // Uebersetzungs-Key, z.B. 'grapes', 'sulphur_dioxide'
     functionalCategory: text("functional_category"), // 'preservative', 'stabiliser', etc.
     isAllergen: boolean("is_allergen").default(false),
+    isBio: boolean("is_bio").default(false),
     sortOrder: integer("sort_order").notNull().default(0),
   },
   (table) => [
@@ -98,6 +105,17 @@ export const translations = pgTable(
   },
   (table) => [unique("uq_translation").on(table.key, table.locale)]
 );
+
+// Recycling-Informationen (1:N mit products)
+export const recyclingMaterials = pgTable("recycling_materials", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  productId: uuid("product_id")
+    .notNull()
+    .references(() => products.id, { onDelete: "cascade" }),
+  component: text("component").notNull(), // 'bottle' | 'cap' | 'label' | 'cork' | 'capsule' | 'box' | 'other'
+  material: text("material").notNull(), // 'glass' | 'aluminium' | 'plastic_pet' | 'plastic_pp' | 'paper' | 'cork' | 'tinplate' | 'cardboard'
+  sortOrder: integer("sort_order").notNull().default(0),
+});
 
 // QR-Code Metadaten (1:1 mit products)
 export const qrCodes = pgTable("qr_codes", {
@@ -119,4 +137,6 @@ export type NewNutritionalValue = typeof nutritionalValues.$inferInsert;
 export type Ingredient = typeof ingredients.$inferSelect;
 export type NewIngredient = typeof ingredients.$inferInsert;
 export type Translation = typeof translations.$inferSelect;
+export type RecyclingMaterial = typeof recyclingMaterials.$inferSelect;
+export type NewRecyclingMaterial = typeof recyclingMaterials.$inferInsert;
 export type QrCode = typeof qrCodes.$inferSelect;

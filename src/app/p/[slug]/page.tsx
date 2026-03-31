@@ -1,15 +1,27 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { db } from "@/lib/db";
-import { products, nutritionalValues, ingredients } from "@/lib/db/schema";
+import {
+  products,
+  nutritionalValues,
+  ingredients,
+  recyclingMaterials,
+} from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { ProductHeader } from "@/components/elabel/ProductHeader";
 import { NutritionalTable } from "@/components/elabel/NutritionalTable";
 import { IngredientList } from "@/components/elabel/IngredientList";
 import { AllergenWarnings } from "@/components/elabel/AllergenWarnings";
+import { RecyclingInfo } from "@/components/elabel/RecyclingInfo";
 import { LanguageSwitcher } from "@/components/elabel/LanguageSwitcher";
 import { LegalFooter } from "@/components/elabel/LegalFooter";
-import { DEFAULT_LOCALE, LOCALES, type Locale } from "@/lib/constants";
+import {
+  DEFAULT_LOCALE,
+  LOCALES,
+  SUGAR_CLASSIFICATIONS,
+  UI_TRANSLATIONS,
+  type Locale,
+} from "@/lib/constants";
 import type { Metadata } from "next";
 
 interface PageProps {
@@ -41,18 +53,29 @@ async function getProductData(slug: string) {
 
   if (!product || !product.isPublished) return null;
 
-  const [nutrition, productIngredients] = await Promise.all([
-    db.query.nutritionalValues.findFirst({
-      where: eq(nutritionalValues.productId, product.id),
-    }),
-    db
-      .select()
-      .from(ingredients)
-      .where(eq(ingredients.productId, product.id))
-      .orderBy(ingredients.sortOrder),
-  ]);
+  const [nutrition, productIngredients, productRecyclingMaterials] =
+    await Promise.all([
+      db.query.nutritionalValues.findFirst({
+        where: eq(nutritionalValues.productId, product.id),
+      }),
+      db
+        .select()
+        .from(ingredients)
+        .where(eq(ingredients.productId, product.id))
+        .orderBy(ingredients.sortOrder),
+      db
+        .select()
+        .from(recyclingMaterials)
+        .where(eq(recyclingMaterials.productId, product.id))
+        .orderBy(recyclingMaterials.sortOrder),
+    ]);
 
-  return { product, nutrition, ingredients: productIngredients };
+  return {
+    product,
+    nutrition,
+    ingredients: productIngredients,
+    recyclingMaterials: productRecyclingMaterials,
+  };
 }
 
 export default async function ELabelPage({
@@ -70,7 +93,21 @@ export default async function ELabelPage({
   const data = await getProductData(slug);
   if (!data) notFound();
 
-  const { product, nutrition, ingredients: productIngredients } = data;
+  const {
+    product,
+    nutrition,
+    ingredients: productIngredients,
+    recyclingMaterials: productRecyclingMaterials,
+  } = data;
+
+  // Zuckerklassifizierung (z.B. Brut, Extra Dry) ermitteln
+  const sugarClassKey = product.sugarClassification as
+    | keyof typeof SUGAR_CLASSIFICATIONS
+    | null;
+  const sugarClassLabel =
+    sugarClassKey && SUGAR_CLASSIFICATIONS[sugarClassKey]
+      ? SUGAR_CLASSIFICATIONS[sugarClassKey][locale]
+      : null;
 
   return (
     <main className="flex-1 flex flex-col items-center py-8 px-4">
@@ -81,6 +118,15 @@ export default async function ELabelPage({
 
         <div className="bg-white rounded-lg shadow-sm border border-[var(--color-border)] p-6">
           <ProductHeader product={product} locale={locale} />
+
+          {sugarClassLabel && (
+            <p className="text-sm mt-2" style={{ color: "var(--color-text-muted)" }}>
+              <span className="font-medium" style={{ color: "var(--color-text)" }}>
+                {UI_TRANSLATIONS.sugar_classification[locale]}:
+              </span>{" "}
+              {sugarClassLabel}
+            </p>
+          )}
 
           <hr className="my-4 border-[var(--color-border)]" />
 
@@ -95,6 +141,11 @@ export default async function ELabelPage({
 
           <IngredientList
             ingredients={productIngredients}
+            locale={locale}
+          />
+
+          <RecyclingInfo
+            materials={productRecyclingMaterials}
             locale={locale}
           />
         </div>

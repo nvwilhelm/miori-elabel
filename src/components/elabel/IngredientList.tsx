@@ -10,6 +10,21 @@ interface IngredientListProps {
   locale: Locale;
 }
 
+function BioBadge({ locale }: { locale: Locale }) {
+  return (
+    <span
+      className="inline-flex items-center ml-1 px-1.5 py-0.5 text-[10px] font-semibold leading-none rounded-sm"
+      style={{
+        backgroundColor: "#e6f4ea",
+        color: "#1e7e34",
+        verticalAlign: "super",
+      }}
+    >
+      {UI_TRANSLATIONS.bio_ingredient[locale]}
+    </span>
+  );
+}
+
 export function IngredientList({
   ingredients,
   locale,
@@ -35,6 +50,7 @@ export function IngredientList({
               return (
                 <span key={ingredient.id}>
                   <strong className="font-bold underline">{name}</strong>
+                  {ingredient.isBio && <BioBadge locale={locale} />}
                   {separator}
                 </span>
               );
@@ -43,6 +59,7 @@ export function IngredientList({
             return (
               <span key={ingredient.id}>
                 {name}
+                {ingredient.isBio && <BioBadge locale={locale} />}
                 {separator}
               </span>
             );

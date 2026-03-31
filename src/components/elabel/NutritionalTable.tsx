@@ -1,5 +1,6 @@
 import type { NutritionalValue } from "@/lib/db/schema";
 import { UI_TRANSLATIONS, type Locale } from "@/lib/constants";
+import { hasNegligibleAmounts } from "./NegligibleAmounts";
 
 interface NutritionalTableProps {
   nutrition: NutritionalValue;
@@ -11,23 +12,35 @@ export function NutritionalTable({
   locale,
 }: NutritionalTableProps) {
   const t = UI_TRANSLATIONS;
+  const negligible = hasNegligibleAmounts(nutrition);
 
-  const rows = [
+  // Immer angezeigte Zeilen: Energie, Kohlenhydrate, Zucker
+  const rows: { label: string; value: string; indent: boolean }[] = [
     {
       label: t.energy[locale],
       value: `${nutrition.energyKj} kJ / ${nutrition.energyKcal} kcal`,
       indent: false,
     },
-    {
-      label: t.fat[locale],
-      value: `${nutrition.fat} g`,
-      indent: false,
-    },
-    {
-      label: t.saturated_fat[locale],
-      value: `${nutrition.saturatedFat} g`,
-      indent: true,
-    },
+  ];
+
+  // Fett + gesaettigte Fettsaeuren nur anzeigen wenn nicht vernachlaessigbar
+  if (!negligible) {
+    rows.push(
+      {
+        label: t.fat[locale],
+        value: `${nutrition.fat} g`,
+        indent: false,
+      },
+      {
+        label: t.saturated_fat[locale],
+        value: `${nutrition.saturatedFat} g`,
+        indent: true,
+      }
+    );
+  }
+
+  // Kohlenhydrate und Zucker immer anzeigen
+  rows.push(
     {
       label: t.carbohydrates[locale],
       value: `${nutrition.carbohydrates} g`,
@@ -37,18 +50,24 @@ export function NutritionalTable({
       label: t.sugars[locale],
       value: `${nutrition.sugars} g`,
       indent: true,
-    },
-    {
-      label: t.protein[locale],
-      value: `${nutrition.protein} g`,
-      indent: false,
-    },
-    {
-      label: t.salt[locale],
-      value: `${nutrition.salt} g`,
-      indent: false,
-    },
-  ];
+    }
+  );
+
+  // Eiweiss und Salz nur anzeigen wenn nicht vernachlaessigbar
+  if (!negligible) {
+    rows.push(
+      {
+        label: t.protein[locale],
+        value: `${nutrition.protein} g`,
+        indent: false,
+      },
+      {
+        label: t.salt[locale],
+        value: `${nutrition.salt} g`,
+        indent: false,
+      }
+    );
+  }
 
   return (
     <section className="mb-6">
@@ -75,6 +94,14 @@ export function NutritionalTable({
           ))}
         </tbody>
       </table>
+      {negligible && (
+        <p
+          className="text-xs mt-2 leading-relaxed"
+          style={{ color: "var(--color-text-muted)" }}
+        >
+          {t.negligible_amounts[locale]}
+        </p>
+      )}
     </section>
   );
 }

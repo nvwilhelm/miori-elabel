@@ -6,6 +6,7 @@ import {
   products,
   nutritionalValues,
   ingredients,
+  recyclingMaterials,
 } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { ProductForm } from "@/components/admin/ProductForm";
@@ -24,7 +25,7 @@ export default async function EditProductPage({ params }: PageProps) {
 
   if (!product) notFound();
 
-  const [nutrition, productIngredients] = await Promise.all([
+  const [nutrition, productIngredients, productRecyclingMaterials] = await Promise.all([
     db.query.nutritionalValues.findFirst({
       where: eq(nutritionalValues.productId, id),
     }),
@@ -33,6 +34,11 @@ export default async function EditProductPage({ params }: PageProps) {
       .from(ingredients)
       .where(eq(ingredients.productId, id))
       .orderBy(ingredients.sortOrder),
+    db
+      .select()
+      .from(recyclingMaterials)
+      .where(eq(recyclingMaterials.productId, id))
+      .orderBy(recyclingMaterials.sortOrder),
   ]);
 
   return (
@@ -46,6 +52,7 @@ export default async function EditProductPage({ params }: PageProps) {
           product={product}
           nutrition={nutrition}
           ingredients={productIngredients}
+          recyclingMaterials={productRecyclingMaterials}
         />
       </div>
     </div>

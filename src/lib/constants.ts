@@ -12,10 +12,12 @@ export const WINE_TYPES = {
   dessert: { de: "Dessertwein", en: "Dessert Wine" },
 } as const;
 
-// Produkttypen
+// Produkttypen (wie bei e-label.eu)
 export const PRODUCT_TYPES = {
-  wine: { de: "Wein", en: "Wine" },
-  spirit: { de: "Spirituose", en: "Spirit" },
+  wine: { de: "Wein", en: "Wine", hint: "z.B. Weißwein, Rotwein oder Schaumwein" },
+  aromatised_wine: { de: "Aromatisierter Wein", en: "Aromatised Wine", hint: "z.B. Glühwein oder Glogg" },
+  liqueur_wine: { de: "Likörwein", en: "Liqueur Wine", hint: "z.B. Portwein oder Sherry" },
+  spirit: { de: "Spirituose", en: "Spirit", hint: "Wodka, Whiskey, ..." },
 } as const;
 
 // Geschmacksprofile
@@ -24,6 +26,41 @@ export const TASTE_PROFILES = {
   "semi-dry": { de: "halbtrocken", en: "semi-dry" },
   "semi-sweet": { de: "lieblich", en: "semi-sweet" },
   sweet: { de: "süß", en: "sweet" },
+} as const;
+
+// Klassifizierung nach Zuckergehalt (fuer Schaumwein etc.)
+export const SUGAR_CLASSIFICATIONS = {
+  brut_nature: { de: "Brut Nature", en: "Brut Nature" },
+  extra_brut: { de: "Extra Brut", en: "Extra Brut" },
+  brut: { de: "Brut", en: "Brut" },
+  extra_dry: { de: "Extra Trocken", en: "Extra Dry" },
+  dry: { de: "Trocken", en: "Dry" },
+  demi_sec: { de: "Halbtrocken", en: "Demi-Sec" },
+  doux: { de: "Mild/Süß", en: "Doux/Sweet" },
+} as const;
+
+// Recycling-Komponenten und Materialien
+export const RECYCLING_COMPONENTS = {
+  bottle: { de: "Flasche", en: "Bottle" },
+  cap: { de: "Verschluss", en: "Cap" },
+  cork: { de: "Korken", en: "Cork" },
+  capsule: { de: "Kapsel", en: "Capsule" },
+  label: { de: "Etikett", en: "Label" },
+  box: { de: "Karton/Verpackung", en: "Box/Packaging" },
+  other: { de: "Sonstiges", en: "Other" },
+} as const;
+
+export const RECYCLING_MATERIALS = {
+  glass: { de: "Glas", en: "Glass", icon: "GL" },
+  aluminium: { de: "Aluminium", en: "Aluminium", icon: "ALU" },
+  plastic_pet: { de: "Kunststoff (PET)", en: "Plastic (PET)", icon: "PET 1" },
+  plastic_pp: { de: "Kunststoff (PP)", en: "Plastic (PP)", icon: "PP 5" },
+  tinplate: { de: "Weißblech", en: "Tinplate", icon: "FE" },
+  paper: { de: "Papier", en: "Paper", icon: "PAP" },
+  cardboard: { de: "Karton", en: "Cardboard", icon: "PAP" },
+  cork_natural: { de: "Naturkork", en: "Natural Cork", icon: "FOR" },
+  cork_synthetic: { de: "Kunststoffkork", en: "Synthetic Cork", icon: "PP 5" },
+  wood: { de: "Holz", en: "Wood", icon: "FOR" },
 } as const;
 
 // Haeufige Zutaten fuer Wein (mit Uebersetzungs-Keys)
@@ -137,6 +174,20 @@ export const UI_TRANSLATIONS: Record<
   grape_variety: { de: "Rebsorte", en: "Grape variety" },
   taste: { de: "Geschmack", en: "Taste" },
   producer: { de: "Erzeuger", en: "Producer" },
+  recycling: { de: "Recycling", en: "Recycling" },
+  packaging_materials: {
+    de: "Verpackungsmaterialien",
+    en: "Packaging Materials",
+  },
+  bio_ingredient: { de: "Bio", en: "Organic" },
+  negligible_amounts: {
+    de: "Enthält geringfügige Mengen an Fett, gesättigten Fettsäuren, Eiweiß und Salz.",
+    en: "Contains negligible amounts of fat, saturated fatty acids, protein and salt.",
+  },
+  sugar_classification: {
+    de: "Klassifizierung",
+    en: "Classification",
+  },
   privacy_notice: {
     de: "Diese Seite erhebt keine personenbezogenen Daten. Es werden keine Cookies verwendet.",
     en: "This page does not collect personal data. No cookies are used.",
