@@ -110,25 +110,22 @@ export default async function ELabelPage({
       : null;
 
   return (
-    <main className="flex-1 flex flex-col items-center py-8 px-4">
-      <div className="w-full max-w-lg">
+    <main className="flex-1 flex flex-col items-center py-4 px-3">
+      <div className="w-full max-w-md">
         <Suspense>
           <LanguageSwitcher current={locale} />
         </Suspense>
 
-        <div className="bg-white rounded-lg shadow-sm border border-[var(--color-border)] p-6">
+        <div className="bg-white rounded-lg shadow-sm border border-[var(--color-border)] px-4 py-3">
           <ProductHeader product={product} locale={locale} />
 
           {sugarClassLabel && (
-            <p className="text-sm mt-2" style={{ color: "var(--color-text-muted)" }}>
-              <span className="font-medium" style={{ color: "var(--color-text)" }}>
-                {UI_TRANSLATIONS.sugar_classification[locale]}:
-              </span>{" "}
-              {sugarClassLabel}
+            <p className="text-xs text-[var(--color-text-muted)] -mt-2 mb-2">
+              {UI_TRANSLATIONS.sugar_classification[locale]}: {sugarClassLabel}
             </p>
           )}
 
-          <hr className="my-4 border-[var(--color-border)]" />
+          <hr className="my-2 border-[var(--color-border)]" />
 
           <AllergenWarnings
             ingredients={productIngredients}

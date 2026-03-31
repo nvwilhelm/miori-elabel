@@ -25,11 +25,16 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Upload-Verzeichnis fuer Produktbilder
+RUN mkdir -p /app/uploads && chown nextjs:nodejs /app/uploads
+VOLUME /app/uploads
+
 USER nextjs
 
 EXPOSE 3000
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+ENV UPLOAD_DIR="/app/uploads"
 
 CMD ["node", "server.js"]

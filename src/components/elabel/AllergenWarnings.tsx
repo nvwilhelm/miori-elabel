@@ -18,13 +18,13 @@ export function AllergenWarnings({
   if (allergens.length === 0) return null;
 
   return (
-    <section className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded">
-      <h2 className="text-base font-semibold mb-2 flex items-center gap-2">
+    <section className="mb-3 px-3 py-2 bg-amber-50 border border-amber-200 rounded text-xs">
+      <div className="flex items-center gap-1.5 font-semibold text-amber-800 mb-0.5">
         <svg
-          className="w-5 h-5 text-amber-600"
+          className="w-3.5 h-3.5"
           fill="none"
           viewBox="0 0 24 24"
-          strokeWidth={2}
+          strokeWidth={2.5}
           stroke="currentColor"
         >
           <path
@@ -34,8 +34,8 @@ export function AllergenWarnings({
           />
         </svg>
         {UI_TRANSLATIONS.allergens[locale]}
-      </h2>
-      <p className="text-sm">
+      </div>
+      <p>
         {allergens
           .map(
             (a) =>

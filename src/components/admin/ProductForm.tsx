@@ -20,6 +20,7 @@ import type {
   RecyclingMaterial,
 } from "@/lib/db/schema";
 import type { ProductFormState } from "@/app/admin/products/actions";
+import { ImageUpload } from "./ImageUpload";
 
 // --- Hilfskonstanten ---
 
@@ -354,15 +355,11 @@ export function ProductForm({
             </div>
           )}
 
-          {/* Foto URL */}
-          <div>
-            <label className={labelClass}>Foto URL</label>
-            <input
+          {/* Foto Upload */}
+          <div className="md:col-span-2">
+            <ImageUpload
+              currentUrl={product?.imageUrl}
               name="imageUrl"
-              type="url"
-              defaultValue={product?.imageUrl || ""}
-              className={inputClass}
-              placeholder="https://..."
             />
           </div>
         </div>

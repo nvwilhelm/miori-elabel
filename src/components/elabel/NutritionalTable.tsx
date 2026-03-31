@@ -14,7 +14,6 @@ export function NutritionalTable({
   const t = UI_TRANSLATIONS;
   const negligible = hasNegligibleAmounts(nutrition);
 
-  // Immer angezeigte Zeilen: Energie, Kohlenhydrate, Zucker
   const rows: { label: string; value: string; indent: boolean }[] = [
     {
       label: t.energy[locale],
@@ -23,14 +22,9 @@ export function NutritionalTable({
     },
   ];
 
-  // Fett + gesaettigte Fettsaeuren nur anzeigen wenn nicht vernachlaessigbar
   if (!negligible) {
     rows.push(
-      {
-        label: t.fat[locale],
-        value: `${nutrition.fat} g`,
-        indent: false,
-      },
+      { label: t.fat[locale], value: `${nutrition.fat} g`, indent: false },
       {
         label: t.saturated_fat[locale],
         value: `${nutrition.saturatedFat} g`,
@@ -39,7 +33,6 @@ export function NutritionalTable({
     );
   }
 
-  // Kohlenhydrate und Zucker immer anzeigen
   rows.push(
     {
       label: t.carbohydrates[locale],
@@ -53,31 +46,22 @@ export function NutritionalTable({
     }
   );
 
-  // Eiweiss und Salz nur anzeigen wenn nicht vernachlaessigbar
   if (!negligible) {
     rows.push(
-      {
-        label: t.protein[locale],
-        value: `${nutrition.protein} g`,
-        indent: false,
-      },
-      {
-        label: t.salt[locale],
-        value: `${nutrition.salt} g`,
-        indent: false,
-      }
+      { label: t.protein[locale], value: `${nutrition.protein} g`, indent: false },
+      { label: t.salt[locale], value: `${nutrition.salt} g`, indent: false }
     );
   }
 
   return (
-    <section className="mb-6">
-      <h2 className="text-lg font-semibold mb-3">
+    <section className="mb-3">
+      <h2 className="text-sm font-semibold mb-1">
         {t.nutritional_info[locale]}
       </h2>
-      <p className="text-xs text-[var(--color-text-muted)] mb-2">
+      <p className="text-[10px] text-[var(--color-text-muted)] mb-1">
         {t.per_100ml[locale]}
       </p>
-      <table className="w-full text-sm border-collapse">
+      <table className="w-full text-xs border-collapse">
         <tbody>
           {rows.map((row) => (
             <tr
@@ -85,20 +69,17 @@ export function NutritionalTable({
               className="border-b border-[var(--color-border)]"
             >
               <td
-                className={`py-2 ${row.indent ? "pl-4 text-[var(--color-text-muted)]" : "font-medium"}`}
+                className={`py-1 ${row.indent ? "pl-3 text-[var(--color-text-muted)]" : "font-medium"}`}
               >
                 {row.label}
               </td>
-              <td className="py-2 text-right tabular-nums">{row.value}</td>
+              <td className="py-1 text-right tabular-nums">{row.value}</td>
             </tr>
           ))}
         </tbody>
       </table>
       {negligible && (
-        <p
-          className="text-xs mt-2 leading-relaxed"
-          style={{ color: "var(--color-text-muted)" }}
-        >
+        <p className="text-[10px] mt-1 leading-relaxed text-[var(--color-text-muted)]">
           {t.negligible_amounts[locale]}
         </p>
       )}

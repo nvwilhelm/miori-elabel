@@ -15,14 +15,11 @@ export function RecyclingInfo({ materials, locale }: RecyclingInfoProps) {
   if (materials.length === 0) return null;
 
   return (
-    <section className="mb-6">
-      <h2 className="text-lg font-semibold mb-3">
+    <section className="mb-3">
+      <h2 className="text-sm font-semibold mb-1">
         {UI_TRANSLATIONS.recycling[locale]}
       </h2>
-      <p className="text-xs text-[var(--color-text-muted)] mb-2">
-        {UI_TRANSLATIONS.packaging_materials[locale]}
-      </p>
-      <table className="w-full text-sm border-collapse">
+      <table className="w-full text-xs border-collapse">
         <tbody>
           {materials
             .sort((a, b) => a.sortOrder - b.sortOrder)
@@ -43,11 +40,11 @@ export function RecyclingInfo({ materials, locale }: RecyclingInfoProps) {
                   key={item.id}
                   className="border-b border-[var(--color-border)]"
                 >
-                  <td className="py-2 font-medium">{componentName}</td>
-                  <td className="py-2 text-[var(--color-text-muted)]">
+                  <td className="py-1 font-medium">{componentName}</td>
+                  <td className="py-1 text-[var(--color-text-muted)]">
                     {materialName}
                   </td>
-                  <td className="py-2 text-right">
+                  <td className="py-1 text-right">
                     <span
                       className="inline-flex items-center px-2 py-0.5 text-xs font-mono rounded"
                       style={{

@@ -32,11 +32,11 @@ export function IngredientList({
   if (ingredients.length === 0) return null;
 
   return (
-    <section className="mb-6">
-      <h2 className="text-lg font-semibold mb-3">
+    <section className="mb-3">
+      <h2 className="text-sm font-semibold mb-1">
         {UI_TRANSLATIONS.ingredients[locale]}
       </h2>
-      <p className="text-sm leading-relaxed">
+      <p className="text-xs leading-relaxed">
         {ingredients
           .sort((a, b) => a.sortOrder - b.sortOrder)
           .map((ingredient, index) => {
