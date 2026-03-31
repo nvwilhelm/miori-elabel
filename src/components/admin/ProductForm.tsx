@@ -933,134 +933,220 @@ export function ProductForm({
           </div>
 
           {/* ============================================================
-              STEP 4: Inhaltsstoffe
+              STEP 4: Inhaltsstoffe (Layout wie e-label.eu)
               ============================================================ */}
           <div style={{ display: currentStep === 3 ? "block" : "none" }}>
             <h2 className={sectionHeadingClass}>Inhaltsstoffe</h2>
+            <p className="text-xs text-[var(--color-text-muted)] mb-6">
+              Waehlen Sie die Zutaten aus der Liste der Weinzutaten. Alle
+              Zutaten werden automatisch uebersetzt.
+            </p>
 
-            {/* Zutat hinzufuegen Dropdown */}
-            <div className="mb-4">
-              <label className={labelClass}>Zutat hinzufuegen</label>
-              <select
-                onChange={(e) => {
-                  if (e.target.value) {
-                    addIngredient(e.target.value);
-                    e.target.value = "";
-                  }
-                }}
-                className={inputClass}
-              >
-                <option value="">Zutat auswaehlen...</option>
-                {/* Gruppiert nach Kategorie im Dropdown */}
-                {Object.entries(INGREDIENT_CATEGORY_LABELS).map(
-                  ([catKey, catLabel]) => {
-                    const items = COMMON_INGREDIENTS.filter(
-                      (c) =>
-                        (c.category || "") === catKey &&
-                        !selectedIngredients.some((s) => s.key === c.key)
-                    );
-                    if (items.length === 0) return null;
-                    return (
-                      <optgroup key={catKey} label={catLabel}>
-                        {items.map((c) => (
-                          <option key={c.key} value={c.key}>
-                            {INGREDIENT_TRANSLATIONS[c.key]?.de ?? c.key}
-                            {c.isAllergen ? " (Allergen)" : ""}
-                          </option>
-                        ))}
-                      </optgroup>
-                    );
-                  }
-                )}
-              </select>
+            {/* --- 1. Produktart auswaehlen --- */}
+            <div className="mb-6">
+              <h3 className="text-sm font-semibold text-[var(--color-text)] mb-1">
+                1. Produktart auswaehlen
+              </h3>
+              <p className="text-xs text-[var(--color-text-muted)] mb-3">
+                Waehlen Sie die Produktart, fuer die Sie die Zutatenliste
+                erstellen moechten.
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                {Object.entries(PRODUCT_TYPES).map(([key, val]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() =>
+                      setProductType(key)
+                    }
+                    className={`p-3 rounded-lg border text-left transition-all ${
+                      productType === key
+                        ? "border-[var(--admin-accent,var(--color-brand-brown))] bg-[var(--admin-accent-light,#f5efe9)] ring-1 ring-[var(--admin-accent,var(--color-brand-brown))]"
+                        : "border-gray-200 bg-white hover:border-gray-300"
+                    }`}
+                  >
+                    <span className="text-sm font-medium block">
+                      {val.de}
+                    </span>
+                    <span className="text-[10px] text-[var(--color-text-muted)] mt-0.5 block leading-tight">
+                      {val.hint}
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* Ausgewaehlte Zutaten, gruppiert nach Kategorie */}
-            {selectedIngredients.length > 0 && (
-              <div className="space-y-4">
-                {Object.entries(groupedIngredients()).map(([catKey, items]) => (
-                  <div key={catKey}>
-                    <h4 className="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wide mb-2">
-                      {INGREDIENT_CATEGORY_LABELS[catKey] ||
-                        INGREDIENT_CATEGORY_LABELS[""] ||
-                        catKey}
-                    </h4>
-                    <div className="space-y-2">
-                      {items.map((ingredient) => {
-                        const globalIndex = selectedIngredients.findIndex(
-                          (i) => i.key === ingredient.key
+            {/* --- 2. Inhaltsstoffe auswaehlen --- */}
+            <div className="mb-6">
+              <h3 className="text-sm font-semibold text-[var(--color-text)] mb-1">
+                2. Inhaltsstoffe auswaehlen*
+              </h3>
+              <p className="text-xs text-[var(--color-text-muted)] mb-3">
+                Waehlen Sie aus der Liste alle Zutaten aus. Nicht
+                aufgefuehrte Zutaten muessen nicht angegeben werden.
+              </p>
+              <div className="flex gap-2">
+                {/* Weinzutat aus Liste */}
+                <div className="flex-1">
+                  <select
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        addIngredient(e.target.value);
+                        e.target.value = "";
+                      }
+                    }}
+                    className={inputClass}
+                  >
+                    <option value="">
+                      + Weinzutat aus Liste auswaehlen
+                    </option>
+                    {Object.entries(INGREDIENT_CATEGORY_LABELS).map(
+                      ([catKey, catLabel]) => {
+                        const items = COMMON_INGREDIENTS.filter(
+                          (c) =>
+                            (c.category || "") === catKey &&
+                            !selectedIngredients.some(
+                              (s) => s.key === c.key
+                            )
                         );
+                        if (items.length === 0) return null;
                         return (
-                          <div
-                            key={ingredient.key}
-                            className="flex items-center gap-3 p-2 bg-[var(--color-bg-subtle)] rounded-lg"
-                          >
-                            <span className="text-sm text-[var(--color-text-muted)] w-6">
-                              {globalIndex + 1}.
-                            </span>
-                            <span
-                              className={`text-sm flex-1 ${ingredient.isAllergen ? "font-bold" : ""}`}
-                            >
-                              {INGREDIENT_TRANSLATIONS[ingredient.key]?.de ??
-                                ingredient.key}
-                              {ingredient.isAllergen && (
-                                <span className="ml-2 text-xs text-amber-600">
-                                  Allergen
-                                </span>
-                              )}
-                              {ingredient.isBio && (
-                                <span className="ml-2 text-xs text-green-600">
-                                  Bio
-                                </span>
-                              )}
-                            </span>
-
-                            {/* Bio-Zutat Toggle */}
-                            <label className="flex items-center gap-1 text-xs cursor-pointer">
-                              <input
-                                type="checkbox"
-                                checked={ingredient.isBio}
-                                onChange={() => toggleBio(ingredient.key)}
-                                className="w-3.5 h-3.5 rounded border-[var(--color-border)] text-green-600 focus:ring-green-500"
-                              />
-                              Bio
-                            </label>
-
-                            {/* Hidden fields fuer Form-Submission */}
-                            <input
-                              type="hidden"
-                              name="ingredientKey"
-                              value={ingredient.key}
-                            />
-                            <input
-                              type="hidden"
-                              name="ingredientAllergen"
-                              value={String(ingredient.isAllergen)}
-                            />
-                            <input
-                              type="hidden"
-                              name="ingredientCategory"
-                              value={ingredient.category || ""}
-                            />
-                            <input
-                              type="hidden"
-                              name="ingredientBio"
-                              value={String(ingredient.isBio)}
-                            />
-
-                            <button
-                              type="button"
-                              onClick={() => removeIngredient(ingredient.key)}
-                              className="text-xs text-red-500 hover:text-red-700"
-                            >
-                              Entfernen
-                            </button>
-                          </div>
+                          <optgroup key={catKey} label={catLabel}>
+                            {items.map((c) => (
+                              <option key={c.key} value={c.key}>
+                                {INGREDIENT_TRANSLATIONS[c.key]?.de ??
+                                  c.key}
+                                {c.isAllergen ? " (Allergen)" : ""}
+                              </option>
+                            ))}
+                          </optgroup>
                         );
-                      })}
-                    </div>
-                  </div>
-                ))}
+                      }
+                    )}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* --- 3. Zutaten sortieren --- */}
+            {selectedIngredients.length > 0 && (
+              <div>
+                <h3 className="text-sm font-semibold text-[var(--color-text)] mb-1">
+                  3. Zutaten sortieren
+                </h3>
+                <p className="text-xs text-[var(--color-text-muted)] mb-3">
+                  Die Liste ist von der groessten zur kleinsten Menge zu
+                  sortieren.
+                </p>
+
+                <div className="space-y-4">
+                  {Object.entries(groupedIngredients()).map(
+                    ([catKey, items]) => (
+                      <div key={catKey}>
+                        {/* Kategorieheader */}
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="h-px flex-1 bg-gray-200" />
+                          <span className="text-[10px] font-semibold text-[var(--color-text-muted)] uppercase tracking-widest">
+                            {INGREDIENT_CATEGORY_LABELS[catKey] ||
+                              INGREDIENT_CATEGORY_LABELS[""] ||
+                              catKey}
+                          </span>
+                          <div className="h-px flex-1 bg-gray-200" />
+                        </div>
+
+                        {/* Zutaten-Karten */}
+                        <div className="space-y-1.5">
+                          {items.map((ingredient) => {
+                            const globalIndex =
+                              selectedIngredients.findIndex(
+                                (i) => i.key === ingredient.key
+                              );
+                            return (
+                              <div
+                                key={ingredient.key}
+                                className="flex items-center gap-2 px-3 py-2.5 bg-white border border-gray-100 rounded-lg hover:border-gray-200 transition-colors group"
+                              >
+                                {/* Drag handle (visuell) */}
+                                <span className="text-gray-300 group-hover:text-gray-400 cursor-grab shrink-0">
+                                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                                  </svg>
+                                </span>
+
+                                {/* Name + Allergen-Badge */}
+                                <div className="flex-1 min-w-0">
+                                  <span
+                                    className={`text-sm ${ingredient.isAllergen ? "font-bold" : ""}`}
+                                  >
+                                    {INGREDIENT_TRANSLATIONS[
+                                      ingredient.key
+                                    ]?.de ?? ingredient.key}
+                                  </span>
+                                  {ingredient.isAllergen && (
+                                    <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium bg-amber-50 text-amber-700 rounded">
+                                      Allergen
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Bio-Zutat Toggle */}
+                                <label className="flex items-center gap-1.5 px-2 py-1 rounded-md cursor-pointer hover:bg-green-50 transition-colors shrink-0">
+                                  <input
+                                    type="checkbox"
+                                    checked={ingredient.isBio}
+                                    onChange={() =>
+                                      toggleBio(ingredient.key)
+                                    }
+                                    className="w-3.5 h-3.5 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                                  />
+                                  <span className="text-xs text-[var(--color-text-muted)]">
+                                    Bio-Zutat
+                                  </span>
+                                </label>
+
+                                {/* Loeschen */}
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    removeIngredient(ingredient.key)
+                                  }
+                                  className="p-1 rounded-md text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors shrink-0"
+                                  title="Zutat entfernen"
+                                >
+                                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                  </svg>
+                                </button>
+
+                                {/* Hidden fields */}
+                                <input
+                                  type="hidden"
+                                  name="ingredientKey"
+                                  value={ingredient.key}
+                                />
+                                <input
+                                  type="hidden"
+                                  name="ingredientAllergen"
+                                  value={String(ingredient.isAllergen)}
+                                />
+                                <input
+                                  type="hidden"
+                                  name="ingredientCategory"
+                                  value={ingredient.category || ""}
+                                />
+                                <input
+                                  type="hidden"
+                                  name="ingredientBio"
+                                  value={String(ingredient.isBio)}
+                                />
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
               </div>
             )}
           </div>
