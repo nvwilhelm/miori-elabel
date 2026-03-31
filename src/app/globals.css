@@ -8,6 +8,23 @@
   --color-bg: #ffffff;
   --color-bg-subtle: #f9f7f5;
   --color-border: #e5e0db;
+
+  /* Admin Dashboard */
+  --admin-sidebar: #1a2332;
+  --admin-sidebar-hover: #243044;
+  --admin-sidebar-active: #2d3b50;
+  --admin-sidebar-text: #8899aa;
+  --admin-sidebar-text-active: #ffffff;
+  --admin-bg: #f0f2f5;
+  --admin-card: #ffffff;
+  --admin-card-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+  --admin-card-shadow-hover: 0 4px 12px rgba(0,0,0,0.08);
+  --admin-accent: #8b5a3c;
+  --admin-accent-light: #f5efe9;
+  --admin-success: #10b981;
+  --admin-warning: #f59e0b;
+  --admin-danger: #ef4444;
+  --admin-radius: 12px;
 }
 
 @theme inline {
@@ -31,4 +48,9 @@ h2,
 h3,
 h4 {
   font-family: "Lora", serif;
+}
+
+/* Admin uses DM Sans for everything */
+[data-admin] h1, [data-admin] h2, [data-admin] h3, [data-admin] h4 {
+  font-family: "DM Sans", sans-serif;
 }
