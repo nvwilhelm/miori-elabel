@@ -1,16 +1,11 @@
 FROM node:20-alpine AS base
 
-# Dependencies installieren
-FROM base AS deps
+# Build
+FROM base AS builder
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
-
-# Build
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+RUN npm ci
 COPY . .
 RUN npm run build
 

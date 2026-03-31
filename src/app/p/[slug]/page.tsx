@@ -17,15 +17,8 @@ interface PageProps {
   searchParams: Promise<{ lang?: string }>;
 }
 
-// Statische Parameter fuer alle veroeffentlichten Produkte generieren
-export async function generateStaticParams() {
-  const publishedProducts = await db
-    .select({ slug: products.slug })
-    .from(products)
-    .where(eq(products.isPublished, true));
-
-  return publishedProducts.map((p) => ({ slug: p.slug }));
-}
+// Dynamisch rendern (keine DB-Verbindung beim Build noetig)
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
