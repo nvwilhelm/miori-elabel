@@ -26,11 +26,12 @@ import { ImageUpload } from "./ImageUpload";
 
 const INGREDIENT_CATEGORY_LABELS: Record<string, string> = {
   "": "Allgemein",
-  preservative: "Konservierungsstoffe",
+  preservative: "Konservierungsstoffe & Antioxidationsmittel",
   acid_regulator: "Saeureregulatoren",
-  antioxidant: "Antioxidationsmittel",
-  clarifying_agent: "Klaermittel",
+  stabiliser: "Stabilisatoren",
+  clarifying_agent: "Schoenungsmittel",
   gas: "Gase",
+  enzyme: "Enzyme",
 };
 
 // --- Wizard Steps ---

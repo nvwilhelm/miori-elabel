@@ -63,65 +63,125 @@ export const RECYCLING_MATERIALS = {
   wood: { de: "Holz", en: "Wood", icon: "FOR" },
 } as const;
 
-// Haeufige Zutaten fuer Wein (mit Uebersetzungs-Keys)
+// Vollstaendige Weinzutaten gemaess EU-Verordnung 2019/934
 export const COMMON_INGREDIENTS = [
+  // Allgemein
   { key: "grapes", category: null, isAllergen: false },
+  { key: "grape_must", category: null, isAllergen: false },
+  { key: "concentrated_grape_must", category: null, isAllergen: false },
+  { key: "rectified_concentrated_grape_must", category: null, isAllergen: false },
   { key: "sugar", category: null, isAllergen: false },
+  { key: "alcohol", category: null, isAllergen: false },
+  { key: "water", category: null, isAllergen: false },
+  { key: "yeast", category: null, isAllergen: false },
+  { key: "oak_chips", category: null, isAllergen: false },
+  // Konservierungsstoffe & Antioxidationsmittel
   { key: "sulphur_dioxide", category: "preservative", isAllergen: true },
   { key: "sulphites", category: "preservative", isAllergen: true },
+  { key: "potassium_metabisulphite", category: "preservative", isAllergen: true },
   { key: "potassium_sorbate", category: "preservative", isAllergen: false },
+  { key: "sorbic_acid", category: "preservative", isAllergen: false },
+  { key: "ascorbic_acid", category: "preservative", isAllergen: false },
+  { key: "dimethyl_dicarbonate", category: "preservative", isAllergen: false },
+  { key: "lysozyme", category: "preservative", isAllergen: true },
+  // Saeureregulatoren
   { key: "tartaric_acid", category: "acid_regulator", isAllergen: false },
   { key: "citric_acid", category: "acid_regulator", isAllergen: false },
-  { key: "ascorbic_acid", category: "antioxidant", isAllergen: false },
+  { key: "malic_acid", category: "acid_regulator", isAllergen: false },
+  { key: "lactic_acid", category: "acid_regulator", isAllergen: false },
   { key: "calcium_carbonate", category: "acid_regulator", isAllergen: false },
+  { key: "potassium_bicarbonate", category: "acid_regulator", isAllergen: false },
+  { key: "potassium_hydrogen_tartrate", category: "acid_regulator", isAllergen: false },
+  { key: "calcium_tartrate", category: "acid_regulator", isAllergen: false },
+  { key: "calcium_sulphate", category: "acid_regulator", isAllergen: false },
+  // Stabilisatoren
+  { key: "metatartaric_acid", category: "stabiliser", isAllergen: false },
+  { key: "gum_arabic", category: "stabiliser", isAllergen: false },
+  { key: "potassium_polyaspartate", category: "stabiliser", isAllergen: false },
+  { key: "mannoproteins", category: "stabiliser", isAllergen: false },
+  { key: "carboxymethylcellulose", category: "stabiliser", isAllergen: false },
+  // Schoenungsmittel
   { key: "bentonite", category: "clarifying_agent", isAllergen: false },
   { key: "egg_protein", category: "clarifying_agent", isAllergen: true },
   { key: "milk_protein", category: "clarifying_agent", isAllergen: true },
   { key: "casein", category: "clarifying_agent", isAllergen: true },
-  { key: "oak_chips", category: null, isAllergen: false },
-  { key: "yeast", category: null, isAllergen: false },
+  { key: "isinglass", category: "clarifying_agent", isAllergen: true },
+  { key: "gelatine", category: "clarifying_agent", isAllergen: false },
+  { key: "silica_sol", category: "clarifying_agent", isAllergen: false },
+  { key: "pvpp", category: "clarifying_agent", isAllergen: false },
+  { key: "activated_carbon", category: "clarifying_agent", isAllergen: false },
+  { key: "chitosan", category: "clarifying_agent", isAllergen: false },
+  { key: "pea_protein", category: "clarifying_agent", isAllergen: false },
+  { key: "potato_protein", category: "clarifying_agent", isAllergen: false },
+  { key: "yeast_protein", category: "clarifying_agent", isAllergen: false },
+  // Gase
   { key: "carbon_dioxide", category: "gas", isAllergen: false },
-  {
-    key: "concentrated_grape_must",
-    category: null,
-    isAllergen: false,
-  },
-  {
-    key: "rectified_concentrated_grape_must",
-    category: null,
-    isAllergen: false,
-  },
+  { key: "nitrogen", category: "gas", isAllergen: false },
+  { key: "argon", category: "gas", isAllergen: false },
+  // Enzyme
+  { key: "pectinase", category: "enzyme", isAllergen: false },
 ] as const;
 
-// Uebersetzungen fuer Zutaten-Keys
+// Uebersetzungen fuer Zutaten-Keys (EU-Verordnung 2019/934)
 export const INGREDIENT_TRANSLATIONS: Record<
   string,
   Record<string, string>
 > = {
+  // Allgemein
   grapes: { de: "Trauben", en: "Grapes" },
-  sugar: { de: "Zucker", en: "Sugar" },
-  sulphur_dioxide: { de: "Schwefeldioxid", en: "Sulphur dioxide" },
+  grape_must: { de: "Traubenmost", en: "Grape must" },
+  concentrated_grape_must: { de: "Konzentriertes Traubenmost", en: "Concentrated grape must" },
+  rectified_concentrated_grape_must: { de: "Rektifiziertes konzentriertes Traubenmost", en: "Rectified concentrated grape must" },
+  sugar: { de: "Saccharose (Zucker)", en: "Sucrose (sugar)" },
+  alcohol: { de: "Alkohol", en: "Alcohol" },
+  water: { de: "Wasser", en: "Water" },
+  yeast: { de: "Hefe", en: "Yeast" },
+  oak_chips: { de: "Eichenholzchips", en: "Oak chips" },
+  // Konservierungsstoffe & Antioxidationsmittel
+  sulphur_dioxide: { de: "Schwefeldioxid (E220)", en: "Sulphur dioxide (E220)" },
   sulphites: { de: "Sulfite", en: "Sulphites" },
-  potassium_sorbate: { de: "Kaliumsorbat", en: "Potassium sorbate" },
-  tartaric_acid: { de: "Weinsäure", en: "Tartaric acid" },
-  citric_acid: { de: "Citronensäure", en: "Citric acid" },
-  ascorbic_acid: { de: "Ascorbinsäure", en: "Ascorbic acid" },
-  calcium_carbonate: { de: "Calciumcarbonat", en: "Calcium carbonate" },
+  potassium_metabisulphite: { de: "Kaliummetabisulfit (E224)", en: "Potassium metabisulphite (E224)" },
+  potassium_sorbate: { de: "Kaliumsorbat (E202)", en: "Potassium sorbate (E202)" },
+  sorbic_acid: { de: "Sorbinsäure (E200)", en: "Sorbic acid (E200)" },
+  ascorbic_acid: { de: "Ascorbinsäure (E300)", en: "Ascorbic acid (E300)" },
+  dimethyl_dicarbonate: { de: "Dimethyldicarbonat (E242)", en: "Dimethyl dicarbonate (E242)" },
+  lysozyme: { de: "Lysozym (aus Ei) (E1105)", en: "Lysozyme (from egg) (E1105)" },
+  // Saeureregulatoren
+  tartaric_acid: { de: "L(+)-Weinsäure (E334)", en: "L(+)-Tartaric acid (E334)" },
+  citric_acid: { de: "Citronensäure (E330)", en: "Citric acid (E330)" },
+  malic_acid: { de: "DL-Äpfelsäure (E296)", en: "DL-Malic acid (E296)" },
+  lactic_acid: { de: "Milchsäure (E270)", en: "Lactic acid (E270)" },
+  calcium_carbonate: { de: "Calciumcarbonat (E170)", en: "Calcium carbonate (E170)" },
+  potassium_bicarbonate: { de: "Kaliumhydrogencarbonat (E501)", en: "Potassium bicarbonate (E501)" },
+  potassium_hydrogen_tartrate: { de: "Kaliumhydrogentartrat (E336)", en: "Potassium hydrogen tartrate (E336)" },
+  calcium_tartrate: { de: "Calciumtartrat (E354)", en: "Calcium tartrate (E354)" },
+  calcium_sulphate: { de: "Calciumsulfat (E516)", en: "Calcium sulphate (E516)" },
+  // Stabilisatoren
+  metatartaric_acid: { de: "Metaweinsäure (E353)", en: "Metatartaric acid (E353)" },
+  gum_arabic: { de: "Gummi Arabicum (E414)", en: "Gum arabic (E414)" },
+  potassium_polyaspartate: { de: "Kaliumpolyaspartat (E456)", en: "Potassium polyaspartate (E456)" },
+  mannoproteins: { de: "Mannoproteine (aus Hefe)", en: "Mannoproteins (from yeast)" },
+  carboxymethylcellulose: { de: "Carboxymethylcellulose (E466)", en: "Carboxymethylcellulose (E466)" },
+  // Schoenungsmittel
   bentonite: { de: "Bentonit", en: "Bentonite" },
   egg_protein: { de: "Eiweiß (Ei)", en: "Egg protein" },
-  milk_protein: { de: "Milcheiweiß", en: "Milk protein" },
+  milk_protein: { de: "Milcheiweiß (Milch)", en: "Milk protein" },
   casein: { de: "Kasein (Milch)", en: "Casein (milk)" },
-  oak_chips: { de: "Eichenholzchips", en: "Oak chips" },
-  yeast: { de: "Hefe", en: "Yeast" },
-  carbon_dioxide: { de: "Kohlendioxid", en: "Carbon dioxide" },
-  concentrated_grape_must: {
-    de: "Konzentriertes Traubenmost",
-    en: "Concentrated grape must",
-  },
-  rectified_concentrated_grape_must: {
-    de: "Rektifiziertes konzentriertes Traubenmost",
-    en: "Rectified concentrated grape must",
-  },
+  isinglass: { de: "Hausenblase (Fisch)", en: "Isinglass (fish)" },
+  gelatine: { de: "Gelatine", en: "Gelatine" },
+  silica_sol: { de: "Kieselsol", en: "Silica sol" },
+  pvpp: { de: "PVPP (Polyvinylpolypyrrolidon)", en: "PVPP (Polyvinylpolypyrrolidone)" },
+  activated_carbon: { de: "Aktivkohle", en: "Activated carbon" },
+  chitosan: { de: "Chitosan (aus Pilzen)", en: "Chitosan (from fungi)" },
+  pea_protein: { de: "Erbsenprotein", en: "Pea protein" },
+  potato_protein: { de: "Kartoffelprotein", en: "Potato protein" },
+  yeast_protein: { de: "Hefeprotein", en: "Yeast protein" },
+  // Gase
+  carbon_dioxide: { de: "Kohlendioxid (E290)", en: "Carbon dioxide (E290)" },
+  nitrogen: { de: "Stickstoff (E941)", en: "Nitrogen (E941)" },
+  argon: { de: "Argon (E938)", en: "Argon (E938)" },
+  // Enzyme
+  pectinase: { de: "Pektinase", en: "Pectinase" },
 };
 
 // Laender (haeufige Weinlaender)
