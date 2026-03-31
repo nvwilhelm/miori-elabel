@@ -9,6 +9,7 @@ ENV NODE_ENV=development
 RUN npm ci
 ENV NODE_ENV=production
 COPY . .
+RUN mkdir -p public
 RUN npm run build
 
 # Production
